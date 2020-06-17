@@ -1,0 +1,34 @@
+---
+# Copyright 2020, VEXXHOST, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+frr_repos_keys:
+  - id: 4A56C7738BB3F81595A805D2A832769908F13ED1
+    url: "https://deb.frrouting.org/frr/keys.asc"
+    state: present
+  - id: 3D9968AC9AE7BE1169288DDB1FD5839895F57FDA
+    url: "https://deb.frrouting.org/frr/keys.asc"
+    state: present
+  - id: A90FC36D9429409798E9C2D874DEED43AB194DBF
+    url: "https://deb.frrouting.org/frr/keys.asc"
+    state: present
+
+frr_repos:
+  - repo: "deb {{ apt_repo_url | default('https://deb.frrouting.org/frr ' ~ ansible_distribution_release ~ ' frr-stable') }}"
+    state: present
+    filename: "frr"
+
+frr_distro_packages:
+  - frr
+  - frr-pythontools

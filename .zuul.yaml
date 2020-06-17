@@ -1,0 +1,13 @@
+- job:
+    name: ffrouting-deploy
+    parent: base
+    run: tests/test.yml
+    nodeset: debian-buster
+
+- project:
+    check:
+      jobs:
+        - ffrouting-deploy
+    gate:
+      jobs:
+        - ffrouting-deploy
