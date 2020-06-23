@@ -13,16 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Set with list of vlans that needs to be configured
-# frr_vlans:
-#   - vlan-raw-device: eth0
-#     id: 100
-#     address: 192.168.1.100
-#     netmask: 255.255.255.0
-#     network: 192.168.1.0
-#     broadcast: 192.168.1.255
-#     gateway: 192.168.1.1
-#     mtu: 1496
-#     up: route add -net 192.168.0.0 netmask 255.255.0.0 gw 192.168.1.1
-#     down: route del -net 192.168.0.0 netmask 255.255.0.0 gw 192.168.1.1
-frr_vlans: []
+frr_vlans:
+  - vlan-raw-device: eth0
+    id: 100
+    address: 192.168.1.100
+    netmask: 255.255.255.0
+    network: 192.168.1.0
+    broadcast: 192.168.1.255

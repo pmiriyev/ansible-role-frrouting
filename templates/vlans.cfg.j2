@@ -1,0 +1,7 @@
+
+auto {{ item['vlan-raw-device'] }}.{{ item.id }}
+iface {{ item['vlan-raw-device'] }}.{{ item.id }} inet {{ ('address' in item) | ternary('static', 'manual') }}
+{% set _ = item.pop('id') %}
+{% for key, value in item.items() %}
+    {{ key }} {{ value }}
+{% endfor %}

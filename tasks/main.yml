@@ -16,5 +16,9 @@
 - name: Gather variables for each operating system
   include_vars: "{{ ansible_os_family | lower }}.yml"
 
+- name: Create required vlan interfaces
+  include_tasks: frr_vlans.yml
+  when: frr_vlans | length > 0
+
 - name: Install frr
   include_tasks: frr_install.yml
