@@ -14,7 +14,7 @@
 # limitations under the License.
 
 frr_vlans:
-  - vlan-raw-device: eth0
+  - vlan-raw-device: "{{ ansible_default_ipv4.interface }}"
     id: 100
     address: 192.168.1.100
     netmask: 255.255.255.0

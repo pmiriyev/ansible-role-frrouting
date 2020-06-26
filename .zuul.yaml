@@ -8,6 +8,8 @@
     check:
       jobs:
         - ffrouting-deploy
+        - tox-linters
     gate:
       jobs:
         - ffrouting-deploy
+        - tox-linters
