@@ -1,0 +1,13 @@
+!
+! Zebra configuration
+!
+frr defaults traditional
+!
+hostname {{ ansible_hostname }}
+log syslog informational
+!
+! staticd config
+{{ frr_staticd_routes | join('\n') }}
+!
+line vty
+!

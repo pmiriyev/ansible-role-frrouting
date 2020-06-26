@@ -13,15 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Gather variables for each operating system
-  include_vars: "{{ ansible_os_family | lower }}.yml"
+- name: Configure frr
+  become: true
+  become_user: root
+  block:
+    - name: Enable integrated config
+      lineinfile:
+        create: yes
+        path: /etc/frr/vtysh.conf
+        regexp: '^(no)?\s?service integrated-vtysh-config$'
+        line: "service integrated-vtysh-config"
+      notify: Restart frr
 
-- name: Create required vlan interfaces
-  include_tasks: frr_vlans.yml
-  when: frr_vlans | length > 0
-
-- name: Install frr
-  include_tasks: frr_install.yml
-
-- name: Service configuration
-  include_tasks: frr_post_install.yml
+    - name: Write down integrated config
+      template:
+        src: frr.conf.j2
+        dest: "{{ frr_integrated_config_path }}"
+        owner: frr
+        group: frr
+        mode: "0640"
+      notify: Restart frr

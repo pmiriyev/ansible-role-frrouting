@@ -17,13 +17,14 @@
   hosts: all
   vars_files:
     - test_vars.yml
+
   roles:
     - frrouting
 
   post_tasks:
     - name: wait after service restart
       pause:
-        seconds: 30
+        seconds: 10
 
     - name: Ping vlans ip address
       shell: |
@@ -43,3 +44,16 @@
       fail:
         msg: frr is not up
       when: ansible_facts.services['frr'].state != 'running'
+
+    - name: Get static routes
+      become: true
+      become_user: root
+      command: "vtysh -c 'show ip route'"
+      register: _frr_get_routes
+      changed_when: false
+
+    - name: Fail if we're missing routes
+      fail:
+        msg: "We can't find route {{ item }}"
+      with_items: "{{ frr_staticd_routes }}"
+      when: item.split(' ')[-1] not in _frr_get_routes.stdout
