@@ -1,8 +1,26 @@
+---
+
+- nodeset:
+    name: debian-buster-2-node
+    nodes:
+      - name: primary
+        label: debian-buster
+      - name: secondary
+        label: debian-buster
+    groups:
+      - name: switch
+        nodes:
+          - primary
+      - name: peers
+        nodes:
+          - primary
+          - secondary
+
 - job:
     name: ffrouting-deploy
     parent: base
     run: tests/test.yml
-    nodeset: debian-buster
+    nodeset: debian-buster-2-node
 
 - project:
     check:

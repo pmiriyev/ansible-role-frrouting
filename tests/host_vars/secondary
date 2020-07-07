@@ -1,0 +1,4 @@
+frr_bgpd_config:
+  - router bgp 5678
+  - "bgp router-id {{ hostvars['secondary']['ansible_br_infra']['ipv4']['address'] }}"
+  - "neighbor {{ hostvars['primary']['ansible_br_infra']['ipv4']['address'] }} remote-as 1234"

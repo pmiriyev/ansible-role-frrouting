@@ -15,10 +15,10 @@
 
 - name: Installing frr
   hosts: all
-  vars_files:
-    - test_vars.yml
 
   roles:
+    - multi-node-bridge
+    - clear-firewall
     - frrouting
 
   post_tasks:
@@ -36,6 +36,7 @@
       retries: 5
       delay: 10
       with_items: "{{ frr_vlans }}"
+      when: inventory_hostname == 'primary'
 
     - name: Check service state
       service_facts:
@@ -45,15 +46,25 @@
         msg: frr is not up
       when: ansible_facts.services['frr'].state != 'running'
 
-    - name: Get static routes
+    - name: Get routes
       become: true
       become_user: root
       command: "vtysh -c 'show ip route'"
       register: _frr_get_routes
       changed_when: false
 
-    - name: Fail if we're missing routes
+
+    - name: Fail if we're missing static routes
       fail:
         msg: "We can't find route {{ item }}"
       with_items: "{{ frr_staticd_routes }}"
-      when: item.split(' ')[-1] not in _frr_get_routes.stdout
+      when:
+        - inventory_hostname == 'primary'
+        - item.split(' ')[-1] not in _frr_get_routes.stdout
+
+    - name: Fail if we're missing bgp routes
+      fail:
+        msg: "We can't find route 192.168.1.0/24"
+      when:
+        - inventory_hostname == 'secondary'
+        - "'192.168.1.0/24' not in _frr_get_routes.stdout"

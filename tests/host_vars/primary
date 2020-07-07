@@ -1,0 +1,16 @@
+frr_vlans:
+  - vlan-raw-device: "{{ ansible_default_ipv4.interface }}"
+    id: 100
+    address: 192.168.1.100
+    netmask: 255.255.255.0
+    network: 192.168.1.0
+    broadcast: 192.168.1.255
+
+frr_staticd_routes:
+  - ip route 10.0.0.0/24 192.168.1.10
+
+frr_bgpd_config:
+  - router bgp 1234
+  - "bgp router-id {{ hostvars['primary']['ansible_br_infra']['ipv4']['address'] }}"
+  - "neighbor {{ hostvars['secondary']['ansible_br_infra']['ipv4']['address'] }} remote-as 5678"
+  - network 192.168.1.0/24

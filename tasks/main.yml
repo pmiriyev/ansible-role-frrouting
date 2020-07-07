@@ -20,6 +20,11 @@
   include_tasks: frr_vlans.yml
   when: frr_vlans | length > 0
 
+- name: Gather network facts
+  setup:
+    gather_subset:
+      - network
+
 - name: Install frr
   include_tasks: frr_install.yml
 

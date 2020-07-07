@@ -32,4 +32,13 @@
         owner: frr
         group: frr
         mode: "0640"
+        validate: /usr/bin/vtysh -C -f %s
+      notify: Restart frr
+
+    - name: Configure supported daemons
+      lineinfile:
+        path: /etc/frr/daemons
+        line: "{{ item.key }}={{ item.value | bool | ternary('yes', 'no') }}"
+        regexp: "^{{ item.key }}"
+      with_dict: "{{ frr_daemons }}"
       notify: Restart frr

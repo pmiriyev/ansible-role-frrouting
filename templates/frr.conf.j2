@@ -9,5 +9,9 @@ log syslog informational
 ! staticd config
 {{ frr_staticd_routes | join('\n') }}
 !
+!
+! bgpd config
+{{ frr_bgpd_config | join('\n') }}
+!
 line vty
 !
