@@ -25,7 +25,7 @@ frr_repos_keys:
     state: present
 
 frr_repos:
-  - repo: "deb {{ apt_repo_url | default('https://deb.frrouting.org/frr ' ~ ansible_distribution_release ~ ' frr-stable') }}"
+  - repo: "deb {{ apt_repo_url | default('https://deb.frrouting.org/frr ' ~ ansible_facts['distribution_release'] ~ ' frr-stable') }}"
     state: present
     filename: "frr"
 

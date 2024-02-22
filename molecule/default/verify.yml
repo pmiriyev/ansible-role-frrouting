@@ -26,7 +26,7 @@
     - name: Ping vlans ip address
       shell: |
         set -e
-        ping -c2 "{{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}"
+        ping -c2 "{{ hostvars[inventory_hostname]['ansible_facts']['eth1']['ipv4']['address'] }}"
       changed_when: false
       register: _ping_vlan
       until: _ping_vlan is success

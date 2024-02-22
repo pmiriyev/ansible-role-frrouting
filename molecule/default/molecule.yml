@@ -41,21 +41,21 @@ provisioner:
           - ip route 10.0.0.0/24 192.168.1.10
         frr_bgpd_config:
           - router bgp 1234
-          - "bgp router-id {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }}"
-          - "neighbor {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 5678"
+          - "bgp router-id {{ hostvars['primary']['ansible_facts'][bridge_name | replace('-', '_')]['ipv4']['address'] }}"
+          - "neighbor {{ hostvars['secondary']['ansible_facts'][bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 5678"
           - network 192.168.1.0/24
           - address-family ipv4 unicast
-          - "  neighbor {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv out"
+          - "  neighbor {{ hostvars['secondary']['ansible_facts'][bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv out"
           - "exit-address-family"
           - ip prefix-list pl-allowed-adv seq 5 permit 192.168.1.0/24
           - ip prefix-list pl-allowed-adv seq 10 deny any
       secondary:
         frr_bgpd_config:
           - router bgp 5678
-          - "bgp router-id {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }}"
-          - "neighbor {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 1234"
+          - "bgp router-id {{ hostvars['secondary']['ansible_facts'][bridge_name | replace('-', '_')]['ipv4']['address'] }}"
+          - "neighbor {{ hostvars['primary']['ansible_facts'][bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 1234"
           - address-family ipv4 unicast
-          - "  neighbor {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv in"
+          - "  neighbor {{ hostvars['primary']['ansible_facts'][bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv in"
           - exit-address-family
           - ip prefix-list pl-allowed-adv seq 5 permit 192.168.1.0/24
           - ip prefix-list pl-allowed-adv seq 10 deny any
@@ -64,8 +64,8 @@ provisioner:
     prepare: prepare.yml
     converge: playbook.yml
     verify: verify.yml
-  # config_options:
-  #   defaults:
-  #     inject_facts_as_vars: false
+  config_options:
+    defaults:
+      inject_facts_as_vars: false
 scenario:
   name: default
