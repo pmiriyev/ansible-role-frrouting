@@ -42,15 +42,15 @@
     repo: "{{ repo.repo }}"
     state: "{{ repo.state | default('present') }}"
     filename: "{{ repo.filename | default(omit) }}"
-    update_cache: no
+    update_cache: false
   with_items: "{{ frr_repos }}"
   loop_control:
     loop_var: repo
   register: _adding_apt_repo
 
-- name: Update Apt cache
+- name: Update Apt cache  # noqa: no-handler
   apt:
-    update_cache: yes
+    update_cache: true
   when:
     - _adding_apt_repo is changed
   register: _update_apt_cache

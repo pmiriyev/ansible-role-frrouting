@@ -15,6 +15,8 @@
 
 - name: Installing frr
   hosts: all
+  vars:
+    bridge_name: br-infra
 
   roles:
     - multi-node-bridge
@@ -22,7 +24,7 @@
     - frrouting
 
   post_tasks:
-    - name: wait after service restart
+    - name: Wait after service restart
       pause:
         seconds: 10
 
@@ -46,13 +48,19 @@
         msg: frr is not up
       when: ansible_facts.services['frr'].state != 'running'
 
+    - name: Get summary
+      become: true
+      become_user: root
+      command: "vtysh -c 'show bgp summary'"
+      register: _frr_get_summary
+      changed_when: false
+
     - name: Get routes
       become: true
       become_user: root
       command: "vtysh -c 'show ip route'"
       register: _frr_get_routes
       changed_when: false
-
 
     - name: Fail if we're missing static routes
       fail:

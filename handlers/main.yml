@@ -19,4 +19,4 @@
   service:
     name: frr
     state: restarted
-    enabled: yes
+    enabled: true

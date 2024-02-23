@@ -26,7 +26,7 @@
       retries: 5
       delay: 2
 
-    - name: Load vlan modules
+    - name: Load vlan modules  # noqa: no-handler
       modprobe:
         name: 8021q
         state: present
@@ -36,16 +36,17 @@
       template:
         src: vlans.cfg.j2
         dest: "/etc/network/interfaces.d/vlan-{{ item.id }}.cfg"
+        mode: "0644"
       with_items: "{{ frr_vlans }}"
       register: distribute_vlans
 
-    - name: Stop interface
+    - name: Stop interface  # noqa: no-handler
       command: "ifdown {{ item.item['vlan-raw-device'] }}.{{ item.item.id }}"
       with_items: "{{ distribute_vlans.results }}"
       when: item is changed
       changed_when: false
 
-    - name: Start interface
+    - name: Start interface  # noqa: no-handler
       command: "ifup {{ item.item['vlan-raw-device'] }}.{{ item.item.id }}"
       with_items: "{{ distribute_vlans.results }}"
       when: item is changed

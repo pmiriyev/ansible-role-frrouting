@@ -19,10 +19,11 @@
   block:
     - name: Enable integrated config
       lineinfile:
-        create: yes
+        create: true
         path: /etc/frr/vtysh.conf
         regexp: '^(no)?\s?service integrated-vtysh-config$'
         line: "service integrated-vtysh-config"
+        mode: "0640"
       notify: Restart frr
 
     - name: Write down integrated config
