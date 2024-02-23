@@ -1,7 +1,3 @@
 ---
-mock_roles:
-  - multi-node-bridge
-  - clear-firewall
-
 skip_list:
   - fqcn

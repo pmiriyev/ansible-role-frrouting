@@ -27,7 +27,9 @@
       jobs:
         - ffrouting-deploy
         - tox-linters
+        - tox-molecule
     gate:
       jobs:
         - ffrouting-deploy
         - tox-linters
+        - tox-molecule

@@ -1,0 +1,71 @@
+---
+dependency:
+  name: galaxy
+  # options:
+  #   requirements-file: requirements.yml
+  #   role-file: requirements.yml
+driver:
+  name: docker
+platforms:
+  - name: primary
+    groups:
+      - frr
+    image: "${docker_user:-quay.io/gotmax23}/${docker_image_tag:-debian-systemd:buster}"
+    command: ${docker_command:-""}
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: frr
+      - name: noop
+    docker_networks:
+      - name: noop
+        ipam_config:
+          - subnet: 192.168.1.0/24
+  - name: secondary
+    groups:
+      - frr
+    image: "${docker_user:-quay.io/gotmax23}/${docker_image_tag:-debian-systemd:buster}"
+    command: ${docker_command:-""}
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: frr
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  inventory:
+    host_vars:
+      primary:
+        frr_staticd_routes:
+          - ip route 10.0.0.0/24 192.168.1.10
+        frr_bgpd_config:
+          - router bgp 1234
+          - "bgp router-id {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }}"
+          - "neighbor {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 5678"
+          - network 192.168.1.0/24
+          - address-family ipv4 unicast
+          - "  neighbor {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv out"
+          - "exit-address-family"
+          - ip prefix-list pl-allowed-adv seq 5 permit 192.168.1.0/24
+          - ip prefix-list pl-allowed-adv seq 10 deny any
+      secondary:
+        frr_bgpd_config:
+          - router bgp 5678
+          - "bgp router-id {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }}"
+          - "neighbor {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 1234"
+          - address-family ipv4 unicast
+          - "  neighbor {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv in"
+          - exit-address-family
+          - ip prefix-list pl-allowed-adv seq 5 permit 192.168.1.0/24
+          - ip prefix-list pl-allowed-adv seq 10 deny any
+
+  playbooks:
+    prepare: prepare.yml
+    converge: playbook.yml
+    verify: verify.yml
+  # config_options:
+  #   defaults:
+  #     inject_facts_as_vars: false
+scenario:
+  name: default

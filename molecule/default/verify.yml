@@ -1,0 +1,72 @@
+---
+# Copyright 2020, VEXXHOST, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Installing frr
+  hosts: all
+  vars:
+    bridge_name: default
+
+  tasks:
+    - name: Wait after service restart
+      pause:
+        seconds: 10
+
+    - name: Ping vlans ip address
+      shell: |
+        set -e
+        ping -c2 "{{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}"
+      changed_when: false
+      register: _ping_vlan
+      until: _ping_vlan is success
+      retries: 5
+      delay: 10
+      when: inventory_hostname == 'primary'
+
+    - name: Check service state
+      service_facts:
+
+    - name: Fail if frr is down
+      fail:
+        msg: frr is not up
+      when: ansible_facts.services['frr'].state != 'running'
+
+    - name: Get summary
+      become: true
+      become_user: root
+      command: "vtysh -c 'show bgp summary'"
+      register: _frr_get_summary
+      changed_when: false
+
+    - name: Get routes
+      become: true
+      become_user: root
+      command: "vtysh -c 'show ip route'"
+      register: _frr_get_routes
+      changed_when: false
+
+    - name: Fail if we're missing static routes
+      fail:
+        msg: "We can't find route {{ item }}"
+      with_items: "{{ frr_staticd_routes }}"
+      when:
+        - inventory_hostname == 'primary'
+        - item.split(' ')[-1] not in _frr_get_routes.stdout
+
+    - name: Fail if we're missing bgp routes
+      fail:
+        msg: "We can't find route 192.168.1.0/24"
+      when:
+        - inventory_hostname == 'secondary'
+        - "'192.168.1.0/24' not in _frr_get_routes.stdout"

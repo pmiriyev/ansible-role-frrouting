@@ -1,0 +1,9 @@
+---
+
+- name: Installing frr
+  hosts: frr
+  vars:
+    bridge_name: eth0
+
+  roles:
+    - role: "{{ playbook_dir | dirname | dirname | basename }}"
