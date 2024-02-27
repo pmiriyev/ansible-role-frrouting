@@ -1,12 +1,12 @@
 ---
 
 - nodeset:
-    name: debian-buster-2-node
+    name: debian-bookworm-2-node
     nodes:
       - name: primary
-        label: debian-buster
+        label: debian-bookworm
       - name: secondary
-        label: debian-buster
+        label: debian-bookworm
     groups:
       - name: switch
         nodes:
@@ -20,16 +20,38 @@
     name: ffrouting-deploy
     parent: base
     run: tests/test.yml
-    nodeset: debian-buster-2-node
+    nodeset: debian-bookworm-2-node
+
+- job:
+    name: tox-molecule-buster
+    parent: tox-molecule
+    vars:
+      tox_envlist: molecule-buster
+
+- job:
+    name: tox-molecule-bookworm
+    parent: tox-molecule
+    vars:
+      tox_envlist: molecule-bookworm
+
+- job:
+    name: tox-molecule-jammy
+    parent: tox-molecule
+    vars:
+      tox_envlist: molecule-jammy
 
 - project:
     check:
       jobs:
         - ffrouting-deploy
         - tox-linters
-        - tox-molecule
+        - tox-molecule-buster
+        - tox-molecule-bookworm
+        - tox-molecule-jammy
     gate:
       jobs:
         - ffrouting-deploy
         - tox-linters
-        - tox-molecule
+        - tox-molecule-buster
+        - tox-molecule-bookworm
+        - tox-molecule-jammy
