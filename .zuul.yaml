@@ -40,6 +40,12 @@
     vars:
       tox_envlist: molecule-jammy
 
+- job:
+    name: tox-molecule-stream9
+    parent: tox-molecule
+    vars:
+      tox_envlist: molecule-stream9
+
 - project:
     check:
       jobs:
@@ -48,6 +54,7 @@
         - tox-molecule-buster
         - tox-molecule-bookworm
         - tox-molecule-jammy
+        - tox-molecule-stream9
     gate:
       jobs:
         - ffrouting-deploy
@@ -55,3 +62,4 @@
         - tox-molecule-buster
         - tox-molecule-bookworm
         - tox-molecule-jammy
+        - tox-molecule-stream9

@@ -40,7 +40,7 @@
     - name: Fail if frr is down
       fail:
         msg: frr is not up
-      when: ansible_facts.services['frr'].state != 'running'
+      when: ansible_facts.services['frr.service'].state != 'running'
 
     - name: Get summary
       become: true
