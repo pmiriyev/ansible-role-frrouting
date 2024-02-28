@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-frr_repos_keys:
+_frr_repos_keys:
   - id: 4A56C7738BB3F81595A805D2A832769908F13ED1
     url: "https://deb.frrouting.org/frr/keys.asc"
     state: present
@@ -24,11 +24,11 @@ frr_repos_keys:
     url: "https://deb.frrouting.org/frr/keys.asc"
     state: present
 
-frr_repos:
+_frr_repos:
   - repo: "deb {{ apt_repo_url | default('https://deb.frrouting.org/frr ' ~ ansible_facts['distribution_release'] ~ ' frr-stable') }}"
     state: present
     filename: "frr"
 
-frr_distro_packages:
+_frr_distro_packages:
   - frr
   - frr-pythontools

@@ -33,3 +33,7 @@ frr_bgpd_config: []
 frr_bgpd_enable: "{{ (frr_bgpd_config | length > 0) }}"
 frr_daemons:
   bgpd: "{{ frr_bgpd_enable }}"
+
+frr_repos_keys: "{{ _frr_repos_keys | default([]) }}"
+frr_repos: "{{ _frr_repos | default([]) }}"
+frr_distro_packages: "{{ _frr_distro_packages | default([]) }}"

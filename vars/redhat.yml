@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-frr_repos_keys:
+_frr_repos_keys:
   - key: /etc/pki/rpm-gpg/RPM-GPG-KEY-FRR
 
-frr_repos:
+_frr_repos:
   - name: frr
     filename: frr-stable
     description: "FRRouting Packages for Enterprise Linux $releasever - $basearch"
@@ -28,6 +28,6 @@ frr_repos:
     baseurl: https://rpm.frrouting.org/repo/el$releasever/extras
     gpgkey: "file://{{ frr_repos_keys | map(attribute='key') | join('file://') }}"
 
-frr_distro_packages:
+_frr_distro_packages:
   - frr
   - frr-pythontools
