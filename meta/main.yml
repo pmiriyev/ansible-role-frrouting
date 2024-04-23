@@ -5,5 +5,22 @@ galaxy_info:
   company: Vexxhost
   license: Apache2
   role_name: frrouting
-  namespace: vexxhost
+  namespace: openstack
   min_ansible_version: "2.10"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+    - name: EL
+      versions:
+        - "9"
+  galaxy_tags:
+    - cloud
+    - openstack
+    - frrouting
+    - network
