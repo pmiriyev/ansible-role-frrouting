@@ -1,27 +1,5 @@
 ---
 
-- nodeset:
-    name: debian-bookworm-2-node
-    nodes:
-      - name: primary
-        label: debian-bookworm
-      - name: secondary
-        label: debian-bookworm
-    groups:
-      - name: switch
-        nodes:
-          - primary
-      - name: peers
-        nodes:
-          - primary
-          - secondary
-
-- job:
-    name: ffrouting-deploy
-    parent: base
-    run: tests/test.yml
-    nodeset: debian-bookworm-2-node
-
 - job:
     name: tox-molecule-buster
     parent: tox-molecule
@@ -49,7 +27,6 @@
 - project:
     check:
       jobs:
-        - ffrouting-deploy
         - tox-linters
         - tox-molecule-buster
         - tox-molecule-bookworm
@@ -57,7 +34,6 @@
         - tox-molecule-stream9
     gate:
       jobs:
-        - ffrouting-deploy
         - tox-linters
         - tox-molecule-buster
         - tox-molecule-bookworm

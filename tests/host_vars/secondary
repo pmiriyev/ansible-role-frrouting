@@ -1,9 +1,0 @@
-frr_bgpd_config:
-  - router bgp 5678
-  - "bgp router-id {{ hostvars['secondary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }}"
-  - "neighbor {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} remote-as 1234"
-  - address-family ipv4 unicast
-  - "  neighbor {{ hostvars['primary']['ansible_' ~ bridge_name | replace('-', '_')]['ipv4']['address'] }} prefix-list pl-allowed-adv in"
-  - exit-address-family
-  - ip prefix-list pl-allowed-adv seq 5 permit 192.168.1.0/24
-  - ip prefix-list pl-allowed-adv seq 10 deny any
