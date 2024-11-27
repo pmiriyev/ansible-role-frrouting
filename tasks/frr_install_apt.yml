@@ -13,46 +13,56 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install gpg tooling for key management
+- name: Validate repo config is deb822 format
+  vars:
+    _repo_check: "{{ frr_repos | selectattr('repo', 'defined') | map(attribute='repo') }}"
+  ansible.builtin.assert:
+    that: _repo_check | length == 0
+    fail_msg: "The following repository definitions must be updated to deb822 format {{ _repo_check }}"
+
+# NOTE(jrosser) remove this task for the 2025.2 release
+- name: Clean up legacy repository config not in deb822 format
+  file:
+    path: "/etc/apt/sources.list.d/frr.list"
+    state: absent
+  register: _cleanup_apt_repositories
+
+- name: Ensure python3-debian package is available
   apt:
-    name: gnupg
-    state: present
-  register: _install_gpg
-  until: _install_gpg  is success
-  retries: 5
-  delay: 2
+    name: python3-debian
 
-- name: Add/Remove repositories gpg keys
-  apt_key:
-    id: "{{ key.id | default(omit) }}"
-    data: "{{ key.data | default(omit) }}"
-    keyserver: "{{ key.keyserver | default(omit) }}"
-    url: "{{ key.url | default(omit) }}"
-    state: "{{ key.state | default('present') }}"
-  with_items: "{{ frr_repos_keys }}"
-  loop_control:
-    loop_var: key
-  register: _add_apt_keys
-  until: _add_apt_keys  is success
-  retries: 5
-  delay: 2
-
-- name: Add/remove defined APT repositories
-  apt_repository:
-    repo: "{{ repo.repo }}"
-    state: "{{ repo.state | default('present') }}"
-    filename: "{{ repo.filename | default(omit) }}"
-    update_cache: false
+- name: Manage apt repositories
+  ansible.builtin.deb822_repository:
+    allow_downgrade_to_insecure: "{{ item.allow_downgrade_to_insecure | default(omit) }}"
+    allow_insecure: "{{ item.allow_insecure | default(omit) }}"
+    allow_weak: "{{ item.allow_weak | default(omit) }}"
+    architectures: "{{ item.architectures | default(omit) }}"
+    by_hash: "{{ item.by_hash | default(omit) }}"
+    check_date: "{{ item.check_date | default(omit) }}"
+    check_valid_until: "{{ item.check_valid_until | default(omit) }}"
+    components: "{{ item.components | default(omit) }}"
+    date_max_future: "{{ item.date_max_future | default(omit) }}"
+    enabled: "{{ item.enabled | default(omit) }}"
+    inrelease_path: "{{ item.inrelease_path | default(omit) }}"
+    languages: "{{ item.languages | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+    name: "{{ item.name }}"
+    pdiffs: "{{ item.pdiffs | default(omit) }}"
+    signed_by: "{{ item.signed_by | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    suites: "{{ item.suites | default(omit) }}"
+    targets: "{{ item.targets | default(omit) }}"
+    trusted: "{{ item.trusted | default(omit) }}"
+    types: "{{ item.types | default(omit) }}"
+    uris: "{{ item.uris | default(omit) }}"
   with_items: "{{ frr_repos }}"
-  loop_control:
-    loop_var: repo
-  register: _adding_apt_repo
+  register: _manage_apt_repositories
 
 - name: Update Apt cache  # noqa: no-handler
   apt:
     update_cache: true
   when:
-    - _adding_apt_repo is changed
+    - (_manage_apt_repositories is changed) or (_cleanup_apt_repositories is changed)
   register: _update_apt_cache
   until: _update_apt_cache  is success
   changed_when: false

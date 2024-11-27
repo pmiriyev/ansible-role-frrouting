@@ -13,21 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_frr_repos_keys:
-  - id: 4A56C7738BB3F81595A805D2A832769908F13ED1
-    url: "https://deb.frrouting.org/frr/keys.asc"
-    state: present
-  - id: 3D9968AC9AE7BE1169288DDB1FD5839895F57FDA
-    url: "https://deb.frrouting.org/frr/keys.asc"
-    state: present
-  - id: A90FC36D9429409798E9C2D874DEED43AB194DBF
-    url: "https://deb.frrouting.org/frr/keys.asc"
-    state: present
+_frr_architecture_mapping:
+  x86_64: amd64
+  ppc64le: ppc64el
+  s390x: s390x
+  armv7l: armhf
+  aarch64: arm64
 
 _frr_repos:
-  - repo: "deb {{ apt_repo_url | default('https://deb.frrouting.org/frr ' ~ ansible_facts['distribution_release'] ~ ' frr-stable') }}"
+  - name: "frr"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    uris: "https://deb.frrouting.org/frr"
+    signed_by: "{{ lookup('file', 'gpg/DEB-GPG-KEY-FRR') }}"
+    components: frr-stable
+    architectures: "{{ _frr_architecture_mapping.get(ansible_facts['architecture']) }}"
     state: present
-    filename: "frr"
 
 _frr_distro_packages:
   - frr
