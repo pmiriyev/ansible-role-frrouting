@@ -1,12 +1,6 @@
 ---
 
 - job:
-    name: tox-molecule-buster
-    parent: tox-molecule
-    vars:
-      tox_envlist: molecule-buster
-
-- job:
     name: tox-molecule-bookworm
     parent: tox-molecule
     vars:
@@ -28,14 +22,12 @@
     check:
       jobs:
         - tox-linters
-        - tox-molecule-buster
         - tox-molecule-bookworm
         - tox-molecule-jammy
         - tox-molecule-stream9
     gate:
       jobs:
         - tox-linters
-        - tox-molecule-buster
         - tox-molecule-bookworm
         - tox-molecule-jammy
         - tox-molecule-stream9
