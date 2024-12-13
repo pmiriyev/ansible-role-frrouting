@@ -1,7 +1,7 @@
 !
 ! Zebra configuration
 !
-frr defaults traditional
+frr defaults {{ frr_profile }}
 !
 hostname {{ ansible_facts['hostname'] }}
 log syslog informational

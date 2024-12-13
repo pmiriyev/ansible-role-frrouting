@@ -28,6 +28,7 @@
 frr_vlans: []
 
 frr_integrated_config_path: /etc/frr/frr.conf
+frr_profile: traditional
 frr_staticd_routes: []
 frr_bgpd_config: []
 frr_bgpd_enable: "{{ (frr_bgpd_config | length > 0) }}"
