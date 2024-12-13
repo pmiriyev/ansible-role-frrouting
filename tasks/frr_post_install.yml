@@ -24,7 +24,7 @@
         regexp: '^(no)?\s?service integrated-vtysh-config$'
         line: "service integrated-vtysh-config"
         mode: "0640"
-      notify: Restart frr
+      notify: Reload frr
 
     - name: Write down integrated config
       template:
@@ -34,7 +34,7 @@
         group: frr
         mode: "0640"
         validate: /usr/bin/vtysh -C -f %s
-      notify: Restart frr
+      notify: Reload frr
 
     - name: Configure supported daemons
       lineinfile:
