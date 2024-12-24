@@ -1,0 +1,6 @@
+---
+
+- name: Installing frr
+  hosts: frr
+  roles:
+    - role: "frrouting"

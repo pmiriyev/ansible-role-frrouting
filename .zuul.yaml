@@ -1,33 +1,6 @@
 ---
 
-- job:
-    name: tox-molecule-bookworm
-    parent: tox-molecule
-    vars:
-      tox_envlist: molecule-bookworm
-
-- job:
-    name: tox-molecule-jammy
-    parent: tox-molecule
-    vars:
-      tox_envlist: molecule-jammy
-
-- job:
-    name: tox-molecule-stream9
-    parent: tox-molecule
-    vars:
-      tox_envlist: molecule-stream9
-
 - project:
-    check:
-      jobs:
-        - tox-linters
-        - tox-molecule-bookworm
-        - tox-molecule-jammy
-        - tox-molecule-stream9
-    gate:
-      jobs:
-        - tox-linters
-        - tox-molecule-bookworm
-        - tox-molecule-jammy
-        - tox-molecule-stream9
+    templates:
+      - openstack-ansible-linters-jobs
+      - openstack-ansible-molecule

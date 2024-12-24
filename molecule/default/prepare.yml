@@ -19,6 +19,7 @@
         - ca-certificates
         - "{{ iproute_package_name[ansible_facts['os_family'] | lower] }}"
         - "{{ iputils_package_name[ansible_facts['os_family'] | lower] }}"
+        - sudo
 
     - name: Clear gathered facts
       meta: clear_facts

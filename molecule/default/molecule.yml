@@ -10,8 +10,8 @@ platforms:
   - name: primary
     groups:
       - frr
-    image: "${docker_user:-quay.io/gotmax23}/${docker_image_tag:-debian-systemd:buster}"
-    command: ${docker_command:-""}
+    image: "${DOCKER_REGISTRY:-quay.io/gotmax23}/${DOCKER_IMAGE_TAG:-debian-systemd:bookworm}"
+    command: ${DOCKER_COMMAND:-""}
     privileged: true
     pre_build_image: true
     networks:
@@ -24,8 +24,8 @@ platforms:
   - name: secondary
     groups:
       - frr
-    image: "${docker_user:-quay.io/gotmax23}/${docker_image_tag:-debian-systemd:buster}"
-    command: ${docker_command:-""}
+    image: "${DOCKER_REGISTRY:-quay.io/gotmax23}/${DOCKER_IMAGE_TAG:-debian-systemd:bookworm}"
+    command: ${DOCKER_COMMAND:-""}
     privileged: true
     pre_build_image: true
     networks:
