@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Install vlan package
-  package:
+  ansible.builtin.package:
     name: vlan
     state: present
   register: install_vlan
@@ -23,13 +23,13 @@
   delay: 2
 
 - name: Load vlan modules  # noqa: no-handler
-  modprobe:
+  ansible.builtin.modprobe:
     name: 8021q
     state: present
   when: install_vlan is changed
 
 - name: Copy vlans config
-  template:
+  ansible.builtin.template:
     src: vlans.cfg.j2
     dest: "/etc/network/interfaces.d/vlan-{{ item.id }}.cfg"
     mode: "0644"
@@ -37,13 +37,13 @@
   register: distribute_vlans
 
 - name: Stop interface  # noqa: no-handler
-  command: "ifdown {{ item.item['vlan-raw-device'] }}.{{ item.item.id }}"
+  ansible.builtin.command: "ifdown {{ item.item['vlan-raw-device'] }}.{{ item.item.id }}"
   with_items: "{{ distribute_vlans.results }}"
   when: item is changed
   changed_when: false
 
 - name: Start interface  # noqa: no-handler
-  command: "ifup {{ item.item['vlan-raw-device'] }}.{{ item.item.id }}"
+  ansible.builtin.command: "ifup {{ item.item['vlan-raw-device'] }}.{{ item.item.id }}"
   with_items: "{{ distribute_vlans.results }}"
   when: item is changed
   changed_when: false

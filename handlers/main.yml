@@ -14,14 +14,14 @@
 # limitations under the License.
 
 - name: Restart frr
-  service:
+  ansible.builtin.service:
     name: frr
     state: restarted
     enabled: true
   register: frr_restart
 
 - name: Reload frr
-  service:
+  ansible.builtin.service:
     name: frr
     state: reloaded
     enabled: true

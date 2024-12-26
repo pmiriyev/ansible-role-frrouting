@@ -17,11 +17,11 @@
   hosts: all
   tasks:
     - name: Wait after service restart
-      pause:
+      ansible.builtin.pause:
         seconds: 10
 
     - name: Ping vlans ip address
-      shell: |
+      ansible.builtin.shell: |
         set -e
         ping -c2 "{{ hostvars[inventory_hostname]['ansible_facts']['eth1']['ipv4']['address'] }}"
       changed_when: false
@@ -32,25 +32,25 @@
       when: inventory_hostname == 'primary'
 
     - name: Check service state
-      service_facts:
+      ansible.builtin.service_facts:
 
     - name: Fail if frr is down
-      fail:
+      ansible.builtin.fail:
         msg: frr is not up
       when: ansible_facts.services['frr.service'].state != 'running'
 
     - name: Get summary
-      command: "vtysh -c 'show bgp summary'"
+      ansible.builtin.command: "vtysh -c 'show bgp summary'"
       register: _frr_get_summary
       changed_when: false
 
     - name: Get routes
-      command: "vtysh -c 'show ip route'"
+      ansible.builtin.command: "vtysh -c 'show ip route'"
       register: _frr_get_routes
       changed_when: false
 
     - name: Fail if we're missing static routes
-      fail:
+      ansible.builtin.fail:
         msg: "We can't find route {{ item }}"
       with_items: "{{ frr_staticd_routes }}"
       when:
@@ -58,7 +58,7 @@
         - item.split(' ')[-1] not in _frr_get_routes.stdout
 
     - name: Fail if we're missing bgp routes
-      fail:
+      ansible.builtin.fail:
         msg: "We can't find route 192.168.1.0/24"
       when:
         - inventory_hostname == 'secondary'

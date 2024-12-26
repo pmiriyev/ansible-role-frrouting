@@ -14,10 +14,10 @@
 # limitations under the License.
 
 - name: Apply package management distro specific configuration
-  include_tasks: "frr_install_{{ ansible_facts['pkg_mgr'] | lower }}.yml"
+  ansible.builtin.include_tasks: "frr_install_{{ ansible_facts['pkg_mgr'] | lower }}.yml"
 
 - name: Install required distro packages
-  package:
+  ansible.builtin.package:
     name: "{{ frr_distro_packages }}"
     state: present
   register: install_packages

@@ -14,19 +14,19 @@
 # limitations under the License.
 
 - name: Gather variables for each operating system
-  include_vars: "{{ ansible_facts['os_family'] | lower }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_facts['os_family'] | lower }}.yml"
 
 - name: Create required vlan interfaces
-  include_tasks: frr_vlans.yml
+  ansible.builtin.include_tasks: frr_vlans.yml
   when: frr_vlans | length > 0
 
 - name: Gather network facts
-  setup:
+  ansible.builtin.setup:
     gather_subset:
       - network
 
 - name: Install frr
-  include_tasks: frr_install.yml
+  ansible.builtin.include_tasks: frr_install.yml
 
 - name: Service configuration
-  include_tasks: frr_post_install.yml
+  ansible.builtin.include_tasks: frr_post_install.yml

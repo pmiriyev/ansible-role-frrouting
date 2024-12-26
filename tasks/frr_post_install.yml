@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Enable integrated config
-  lineinfile:
+  ansible.builtin.lineinfile:
     create: true
     path: /etc/frr/vtysh.conf
     regexp: '^(no)?\s?service integrated-vtysh-config$'
@@ -23,7 +23,7 @@
   notify: Reload frr
 
 - name: Write down integrated config
-  template:
+  ansible.builtin.template:
     src: frr.conf.j2
     dest: "{{ frr_integrated_config_path }}"
     owner: frr
@@ -33,7 +33,7 @@
   notify: Reload frr
 
 - name: Configure supported daemons
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/frr/daemons
     line: "{{ item.key }}={{ item.value | bool | ternary('yes', 'no') }}"
     regexp: "^{{ item.key }}"

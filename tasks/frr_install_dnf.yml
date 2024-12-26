@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: If a keyfile is provided, copy the gpg keyfile to the key location
-  copy:
+  ansible.builtin.copy:
     src: "gpg/{{ key.key | basename }}"
     dest: "{{ key.key }}"
     mode: '0644'
@@ -27,7 +27,7 @@
   delay: 2
 
 - name: Configure repositories
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: "{{ repo.name }}"
     file: "{{ repo.filename }}"
     description: "{{ repo.description }}"

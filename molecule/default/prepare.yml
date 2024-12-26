@@ -11,7 +11,7 @@
       debian: iputils-ping
   tasks:
     - name: Install required packages
-      package:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
         update_cache: true
@@ -22,4 +22,4 @@
         - sudo
 
     - name: Clear gathered facts
-      meta: clear_facts
+      ansible.builtin.meta: clear_facts
