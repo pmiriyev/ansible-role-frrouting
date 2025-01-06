@@ -20,3 +20,14 @@
     name: frr
     state: restarted
     enabled: true
+  register: frr_restart
+
+- name: Reload frr
+  become: true
+  become_user: root
+  service:
+    name: frr
+    state: reloaded
+    enabled: true
+  when:
+    - frr_restart is not defined or (frr_restart is defined and frr_restart is skipped)
