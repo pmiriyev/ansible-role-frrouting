@@ -2,5 +2,7 @@
 
 - name: Installing frr
   hosts: frr
+  become: true
+  become_user: root
   roles:
     - role: "frrouting"

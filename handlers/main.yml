@@ -14,8 +14,6 @@
 # limitations under the License.
 
 - name: Restart frr
-  become: true
-  become_user: root
   service:
     name: frr
     state: restarted
@@ -23,8 +21,6 @@
   register: frr_restart
 
 - name: Reload frr
-  become: true
-  become_user: root
   service:
     name: frr
     state: reloaded

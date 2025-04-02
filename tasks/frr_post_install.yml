@@ -13,33 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Configure frr
-  become: true
-  become_user: root
-  block:
-    - name: Enable integrated config
-      lineinfile:
-        create: true
-        path: /etc/frr/vtysh.conf
-        regexp: '^(no)?\s?service integrated-vtysh-config$'
-        line: "service integrated-vtysh-config"
-        mode: "0640"
-      notify: Reload frr
+- name: Enable integrated config
+  lineinfile:
+    create: true
+    path: /etc/frr/vtysh.conf
+    regexp: '^(no)?\s?service integrated-vtysh-config$'
+    line: "service integrated-vtysh-config"
+    mode: "0640"
+  notify: Reload frr
 
-    - name: Write down integrated config
-      template:
-        src: frr.conf.j2
-        dest: "{{ frr_integrated_config_path }}"
-        owner: frr
-        group: frr
-        mode: "0640"
-        validate: /usr/bin/vtysh -C -f %s
-      notify: Reload frr
+- name: Write down integrated config
+  template:
+    src: frr.conf.j2
+    dest: "{{ frr_integrated_config_path }}"
+    owner: frr
+    group: frr
+    mode: "0640"
+    validate: /usr/bin/vtysh -C -f %s
+  notify: Reload frr
 
-    - name: Configure supported daemons
-      lineinfile:
-        path: /etc/frr/daemons
-        line: "{{ item.key }}={{ item.value | bool | ternary('yes', 'no') }}"
-        regexp: "^{{ item.key }}"
-      with_dict: "{{ frr_daemons }}"
-      notify: Restart frr
+- name: Configure supported daemons
+  lineinfile:
+    path: /etc/frr/daemons
+    line: "{{ item.key }}={{ item.value | bool | ternary('yes', 'no') }}"
+    regexp: "^{{ item.key }}"
+  with_dict: "{{ frr_daemons }}"
+  notify: Restart frr

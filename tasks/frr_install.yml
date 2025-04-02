@@ -13,19 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install frr
-  become: true
-  become_user: root
-  block:
-    - name: Apply package management distro specific configuration
-      include_tasks: "frr_install_{{ ansible_facts['pkg_mgr'] | lower }}.yml"
+- name: Apply package management distro specific configuration
+  include_tasks: "frr_install_{{ ansible_facts['pkg_mgr'] | lower }}.yml"
 
-    - name: Install required distro packages
-      package:
-        name: "{{ frr_distro_packages }}"
-        state: present
-      register: install_packages
-      until: install_packages is success
-      retries: 5
-      delay: 2
-      notify: Restart frr
+- name: Install required distro packages
+  package:
+    name: "{{ frr_distro_packages }}"
+    state: present
+  register: install_packages
+  until: install_packages is success
+  retries: 5
+  delay: 2
+  notify: Restart frr
