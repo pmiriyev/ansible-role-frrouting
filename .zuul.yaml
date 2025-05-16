@@ -2,5 +2,8 @@
 
 - project:
     templates:
+      - check-requirements
       - openstack-ansible-linters-jobs
       - openstack-ansible-molecule
+      - publish-openstack-docs-pti
+      - build-release-notes-jobs-python3
