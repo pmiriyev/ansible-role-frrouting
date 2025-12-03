@@ -19,7 +19,7 @@
 - name: Install required distro packages
   ansible.builtin.package:
     name: "{{ frr_distro_packages }}"
-    state: present
+    state: "{{ frr_package_state }}"
   register: install_packages
   until: install_packages is success
   retries: 5

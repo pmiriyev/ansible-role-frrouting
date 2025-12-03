@@ -38,3 +38,4 @@ frr_daemons:
 frr_repos_keys: "{{ _frr_repos_keys | default([]) }}"
 frr_repos: "{{ _frr_repos | default([]) }}"
 frr_distro_packages: "{{ _frr_distro_packages | default([]) }}"
+frr_package_state: "{{ package_state | default('latest') }}"
